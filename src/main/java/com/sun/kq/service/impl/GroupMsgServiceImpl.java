@@ -24,7 +24,7 @@ public class GroupMsgServiceImpl implements GroupMsgService {
         String raw_message = receiveMsg.getRaw_message();
         privateMsgService.getPrivateMsgOnKeyword(receiveMsg);
         //只有at我的才可以触发
-        if (raw_message.contains("CQ:at")) {
+        if (raw_message.contains("CQ:at,qq=1767638734")) {
             if (MsgUtil.getMenu(raw_message) != null) {
                 ReplyMsg replyMsg = new ReplyMsg();
                 replyMsg.setReply(MsgUtil.getMenu(raw_message));

@@ -21,5 +21,5 @@ public class URLConst {
     /**
      * 获取该垃圾的分类,后面加垃圾名称的URL编码
      */
-    public static final String GET_RUBBISH_TYPE = "http://lajifenleiapp.com/sk/";
+    public static final String GET_RUBBISH_TYPE = "https://lajifenleiapp.com/sk/";
 }
