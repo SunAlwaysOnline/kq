@@ -27,5 +27,5 @@ public class URLConst {
     /**
      * 花瓣网上妹子的首页
      */
-    public static final String HUABAN_MZ_INDEX = "https://huaban.com/boards/481662/";
+    public static final String HUABAN_MZ_INDEX = "https://huaban.com/boards/24169299/";
 }
