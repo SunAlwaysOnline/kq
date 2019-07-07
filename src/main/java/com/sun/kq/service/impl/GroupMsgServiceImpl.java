@@ -46,6 +46,11 @@ public class GroupMsgServiceImpl implements GroupMsgService {
                 replyMsg.setAt_sender(true);
                 return replyMsg;
             }
+            if(raw_message.contains("死机")){
+                ReplyMsg replyMsg = new ReplyMsg();
+                replyMsg.setReply("好嘞");
+                return replyMsg;
+            }
         }
         return null;
     }

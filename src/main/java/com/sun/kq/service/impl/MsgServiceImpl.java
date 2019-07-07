@@ -61,14 +61,14 @@ public class MsgServiceImpl implements MsgService {
             e.printStackTrace();
         }
 
-        return handleReceiveMsgType(receiveMsg);
+        return handleReceiveMsg(receiveMsg);
 
 
     }
 
 
     /**
-     * 由收到的讨论组消息的内容转发给特定的方法
+     * 由收到的讨论组消息的内容转发给特定的方法（暂时用不到，先留着）
      *
      * @param receiveMsg
      */
@@ -82,7 +82,7 @@ public class MsgServiceImpl implements MsgService {
      *
      * @param receiveMsg
      */
-    private ReplyMsg handleReceiveMsgType(ReceiveMsg receiveMsg) {
+    private ReplyMsg handleReceiveMsg(ReceiveMsg receiveMsg) {
         String post_type = receiveMsg.getPost_type();
         switch (post_type) {
 
@@ -112,7 +112,6 @@ public class MsgServiceImpl implements MsgService {
                 //生命周期元事件
                 //可以初始化缓存
                 //keywordService.getAllDataIntoCache();
-                //System.out.println("关键词缓存初始化成功");
                 break;
         }
 

@@ -45,7 +45,8 @@ public class MsgUtil {
         String[] knownMsg = new String[]{
                 "垃圾分类", "增加垃圾",
                 "设置关键词", "增加关键词", "删除关键词", "列出关键词", "增加监听群组", "删除监听群组", "列出监听群组",
-                "我要充值"};
+                "我要充值",
+                "死机"};
         for (String temp : knownMsg) {
             if (raw_message.contains(temp)) {
                 return true;
