@@ -8,12 +8,12 @@ public interface KmzService {
 
 
     /**
-     * 获取n张妹子图
+     * 获取n张妹子图的key
      *
      * @param n
      * @return
      */
-    List<String> getKmzImageURL(int n);
+    List<String> getKmzImageKey(int n);
 
 
 }

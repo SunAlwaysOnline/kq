@@ -78,6 +78,7 @@ public class KeywordServiceImpl extends ServiceImpl<KeywordMapper, Keyword> impl
             List<String> wordList = new ArrayList<>(Arrays.asList(wordArray));
             UserKeywordCache.addList(temp.getUser_id(), wordList);
         }
+        System.out.println("----------关键词注入缓存成功----------");
     }
 
 

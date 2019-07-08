@@ -11,33 +11,44 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class KmzServiceImpl implements KmzService {
     @Override
-    public List<String> getKmzImageURL(int n) {
-        List<String> urlList = new ArrayList<>();
+    public List<String> getKmzImageKey(int n) {
+        List<String> keyList = new ArrayList<>();
         try {
             Element element = Jsoup.connect(URLConst.HUABAN_MZ_INDEX).get().body();
             List<MzImg> mzImgList = parsePinsFromXml(element.toString());
             String lastPid = mzImgList.get(mzImgList.size() - 1).getPinId();
-            //Element element2 = Jsoup.connect("https://huaban.com/boards/481662/?jxt53umu&max=" + lastPid + "&limit=20&wfl=1").get().body();
-            //System.out.println("第二波");
-            //List<MzImg> mzImgList2 = parsePinsFromXml(element2.toString());
 
-            //if (n < 20) {
-                for (int i = 0; i < 30; i++) {
-                    urlList.add("https://hbimg.huabanimg.com/" + mzImgList.get(i).getKey());
-               // }
+            for (int page = 1; page <= n / 2 + 1; page++) {
+                System.out.println("运行了一次");
+                Element tempElement = Jsoup.connect("https://huaban.com/boards/481662/?jxt53umu&max=" + lastPid + "&limit=20&wfl=" + page).get().body();
+                List<MzImg> tempUrlList = parsePinsFromXml(tempElement.toString());
+                lastPid = tempUrlList.get(tempUrlList.size() - 1).getPinId();
+                mzImgList.addAll(tempUrlList);
             }
 
+            while (true) {
+                int random = new Random().nextInt(mzImgList.size() - 1);
+                String key = mzImgList.get(random).getKey();
+                if (!keyList.contains(key)) {
+                    keyList.add(key);
+                }
+                if (keyList.size() == n) {
+                    break;
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return urlList;
+        return keyList;
     }
 
 

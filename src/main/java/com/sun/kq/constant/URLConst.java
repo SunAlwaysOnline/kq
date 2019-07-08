@@ -1,5 +1,8 @@
 package com.sun.kq.constant;
 
+/**
+ * 保存地址的常量类
+ */
 public class URLConst {
 
     /**
@@ -11,6 +14,11 @@ public class URLConst {
      * 发送私聊消息
      */
     public static final String SEND_PRIVATE_MSG = "/send_private_msg";
+
+    /**
+     * 发送群消息
+     */
+    public static final String SEND_GROUP_MSG = "/send_group_msg";
 
     /**
      * 获取群列表
@@ -25,7 +33,14 @@ public class URLConst {
 
 
     /**
-     * 花瓣网上妹子的首页
+     * 花瓣网上mz的首页
      */
     public static final String HUABAN_MZ_INDEX = "https://huaban.com/boards/24169299/";
+
+    /**
+     * mz图的前缀，后面加key
+     */
+    public static final String MZ_IMG_PREFIX = "https://hbimg.huabanimg.com/";
+
+
 }

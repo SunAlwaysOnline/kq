@@ -1,14 +1,14 @@
 package com.sun.kq.service.impl;
 
+import com.sun.kq.constant.FileConst;
 import com.sun.kq.entity.Keyword;
 import com.sun.kq.entity.Rubbish;
-import com.sun.kq.model.PrivateMsg;
-import com.sun.kq.model.ReceiveMsg;
-import com.sun.kq.model.ReplyMsg;
-import com.sun.kq.model.Result;
+import com.sun.kq.model.*;
 import com.sun.kq.service.KeywordService;
+import com.sun.kq.service.KmzService;
 import com.sun.kq.service.PrivateMsgService;
 import com.sun.kq.service.RubbishService;
+import com.sun.kq.util.ImageDownloadUtil;
 import com.sun.kq.util.KeywordsUtil;
 import com.sun.kq.util.MsgUtil;
 import com.sun.kq.util.UserKeywordCache;
@@ -33,6 +33,9 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
     @Autowired
     RubbishService rubbishService;
 
+    @Autowired
+    KmzService kmzService;
+
     @Override
     public Result sendPrivateMsg(PrivateMsg msg) {
         Result result = restTemplate.postForObject(URL + SEND_PRIVATE_MSG, msg, Result.class);
@@ -48,6 +51,41 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
             replyMsg.setReply(MsgUtil.getMenu(raw_message));
             return replyMsg;
         }
+        if (raw_message.contains("看妹子")) {
+            int n = 1;
+            try {
+                n = Integer.parseInt(raw_message.split("来")[1].split("张")[0]);
+            } catch (Exception e) {
+            }
+            if (n < 0 || n > 30) {
+                ReplyMsg replyMsg = new ReplyMsg();
+                replyMsg.setReply("求求你做个正常的人");
+                replyMsg.setAt_sender(true);
+                return replyMsg;
+            }
+
+            List<String> urlList = kmzService.getKmzImageKey(n);
+            for (String key : urlList) {
+                try {
+                    boolean exist = ImageDownloadUtil.isImgExist(key);
+                    if (!exist) {
+                        ImageDownloadUtil.downloadImg(key);
+                        System.out.println("图像不存在");
+                    } else {
+                        System.out.println("图像存在");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                PrivateMsg privateMsg = new PrivateMsg();
+                privateMsg.setMessage("[CQ:image,file=" + FileConst.KMZ_IMG_PREFIX + key + ".jpg]");
+                privateMsg.setUser_id(receiveMsg.getUser_id());
+                sendPrivateMsg(privateMsg);
+            }
+            return null;
+
+        }
+
         if (raw_message.contains("垃圾分类+")) {
             String type = rubbishService.handleRubbishType(raw_message);
             ReplyMsg replyMsg = new ReplyMsg();
