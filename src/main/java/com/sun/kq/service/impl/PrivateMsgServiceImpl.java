@@ -46,44 +46,17 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
     public ReplyMsg handlePrivateMsg(ReceiveMsg receiveMsg) {
         Long user_id = receiveMsg.getUser_id();
         String raw_message = receiveMsg.getRaw_message();
+
+        //查询指令是否标准，不标准则反馈提示
         if (MsgUtil.getMenu(raw_message) != null) {
             ReplyMsg replyMsg = new ReplyMsg();
             replyMsg.setReply(MsgUtil.getMenu(raw_message));
             return replyMsg;
         }
+
+        //kmz
         if (raw_message.contains("看妹子")) {
-            int n = 1;
-            try {
-                n = Integer.parseInt(raw_message.split("来")[1].split("张")[0]);
-            } catch (Exception e) {
-            }
-            if (n < 0 || n > 30) {
-                ReplyMsg replyMsg = new ReplyMsg();
-                replyMsg.setReply("求求你做个正常的人");
-                replyMsg.setAt_sender(true);
-                return replyMsg;
-            }
-
-            List<String> urlList = kmzService.getKmzImageKey(n);
-            for (String key : urlList) {
-                try {
-                    boolean exist = ImageDownloadUtil.isImgExist(key);
-                    if (!exist) {
-                        ImageDownloadUtil.downloadImg(key);
-                        System.out.println("图像不存在");
-                    } else {
-                        System.out.println("图像存在");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                PrivateMsg privateMsg = new PrivateMsg();
-                privateMsg.setMessage("[CQ:image,file=" + FileConst.KMZ_IMG_PREFIX + key + ".jpg]");
-                privateMsg.setUser_id(receiveMsg.getUser_id());
-                sendPrivateMsg(privateMsg);
-            }
-            return null;
-
+            kmzService.sendMZPicByMsg(receiveMsg);
         }
 
         if (raw_message.contains("垃圾分类+")) {
@@ -134,24 +107,5 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
         return null;
     }
 
-    @Override
-    public void getPrivateMsgOnKeyword(ReceiveMsg receiveMsg) {
-        String raw_message = receiveMsg.getRaw_message();
-        //获取所有不重复的关键词
-        List<String> keywordList = UserKeywordCache.getDistinctKeword();
-        for (int i = 0; i < keywordList.size(); i++) {
-            String keyword = keywordList.get(i);
-            if (raw_message.contains(keyword)) {
-                System.out.println("触发关键词：" + keyword);
-                //获取所有关注该关键词的用户id
-                List<Long> userIdList = UserKeywordCache.getUserIdByKeyword(keyword);
-                for (Long user_id : userIdList) {
-                    System.out.println(keyword + "关键词发送给用户" + user_id);
-                    PrivateMsg privateMsg = MsgUtil.getPrivateMsgByReceiveMsgOnkeyword(user_id, keyword, receiveMsg);
-                    sendPrivateMsg(privateMsg);
-                }
-            }
-        }
-    }
 
 }

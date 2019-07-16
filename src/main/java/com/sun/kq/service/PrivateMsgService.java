@@ -26,11 +26,4 @@ public interface PrivateMsgService {
      */
     ReplyMsg handlePrivateMsg(ReceiveMsg receiveMsg);
 
-
-    /**
-     * 由收到的群信息中的关键词转发给特定的用户
-     *
-     * @param receiveMsg
-     */
-    void getPrivateMsgOnKeyword(ReceiveMsg receiveMsg);
 }

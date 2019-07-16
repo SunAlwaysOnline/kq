@@ -2,10 +2,18 @@ package com.sun.kq.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sun.kq.entity.Keyword;
+import com.sun.kq.model.ReceiveMsg;
 
 import java.util.List;
 
 public interface KeywordService extends IService<Keyword> {
+
+    /**
+     * 监控群消息的关键词，并通知关注该关键词的用户
+     *
+     * @param receiveMsg
+     */
+    void getPrivateMsgOnKeyword(ReceiveMsg receiveMsg);
 
     /**
      * 增加关键词

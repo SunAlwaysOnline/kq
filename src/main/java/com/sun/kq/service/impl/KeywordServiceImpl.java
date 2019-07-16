@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sun.kq.dao.KeywordMapper;
 import com.sun.kq.entity.Keyword;
+import com.sun.kq.model.PrivateMsg;
+import com.sun.kq.model.ReceiveMsg;
 import com.sun.kq.service.KeywordService;
+import com.sun.kq.service.PrivateMsgService;
+import com.sun.kq.util.MsgUtil;
 import com.sun.kq.util.UserKeywordCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,10 +25,34 @@ public class KeywordServiceImpl extends ServiceImpl<KeywordMapper, Keyword> impl
     @Autowired
     KeywordMapper keywordMapper;
 
+    @Autowired
+    PrivateMsgService privateMsgService;
+
     @PostConstruct
     public void init() {
         //将数据库中关键词加载进缓存
         getAllDataIntoCache();
+    }
+
+
+    @Override
+    public void getPrivateMsgOnKeyword(ReceiveMsg receiveMsg) {
+        String raw_message = receiveMsg.getRaw_message();
+        //获取所有不重复的关键词
+        List<String> keywordList = UserKeywordCache.getDistinctKeword();
+        for (int i = 0; i < keywordList.size(); i++) {
+            String keyword = keywordList.get(i);
+            if (raw_message.contains(keyword)) {
+                System.out.println("触发关键词：" + keyword);
+                //获取所有关注该关键词的用户id
+                List<Long> userIdList = UserKeywordCache.getUserIdByKeyword(keyword);
+                for (Long user_id : userIdList) {
+                    System.out.println(keyword + "关键词发送给用户" + user_id);
+                    PrivateMsg privateMsg = MsgUtil.getPrivateMsgByReceiveMsgOnkeyword(user_id, keyword, receiveMsg);
+                    privateMsgService.sendPrivateMsg(privateMsg);
+                }
+            }
+        }
     }
 
     @Override

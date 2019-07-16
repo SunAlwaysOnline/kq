@@ -26,19 +26,21 @@ public class URLConst {
     public static final String GET_GROUP_LIST = "/get_group_list";
 
 
+    //-----------------------------------垃圾分类-----------------------------------
     /**
      * 获取该垃圾的分类,后面加垃圾名称的URL编码
      */
     public static final String GET_RUBBISH_TYPE = "https://lajifenleiapp.com/sk/";
 
 
+    //-------------------------------------KMZ-------------------------------------
     /**
      * 花瓣网上mz的首页
      */
     public static final String HUABAN_MZ_INDEX = "https://huaban.com/boards/24169299/";
 
     /**
-     * mz图的前缀，后面加key
+     * mz图URL的前缀，后面加key
      */
     public static final String MZ_IMG_PREFIX = "https://hbimg.huabanimg.com/";
 

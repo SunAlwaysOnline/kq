@@ -1,11 +1,16 @@
 package com.sun.kq.service.impl;
 
+import com.sun.kq.constant.FileConst;
 import com.sun.kq.constant.URLConst;
-import com.sun.kq.model.MzImg;
+import com.sun.kq.enums.MessageType;
+import com.sun.kq.model.*;
+import com.sun.kq.service.GroupMsgService;
 import com.sun.kq.service.KmzService;
+import com.sun.kq.service.PrivateMsgService;
+import com.sun.kq.util.ImageDownloadUtil;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,6 +23,64 @@ import java.util.regex.Pattern;
 
 @Service
 public class KmzServiceImpl implements KmzService {
+
+    @Autowired
+    KmzService kmzService;
+
+    @Autowired
+    GroupMsgService groupMsgService;
+
+    @Autowired
+    PrivateMsgService privateMsgService;
+
+    @Override
+    public ReplyMsg sendMZPicByMsg(ReceiveMsg receiveMsg) {
+        String raw_message = receiveMsg.getRaw_message();
+        int n = 1;
+        try {
+            n = Integer.parseInt(raw_message.split("来")[1].split("张")[0]);
+        } catch (Exception e) {
+        }
+        if (n < 0 || n > 30) {
+            ReplyMsg replyMsg = new ReplyMsg();
+            replyMsg.setReply("求求你做个正常的人");
+            replyMsg.setAt_sender(true);
+            return replyMsg;
+        }
+
+        List<String> urlList = kmzService.getKmzImageKey(n);
+        for (String key : urlList) {
+            try {
+                boolean exist = ImageDownloadUtil.isImgExist(key);
+                if (!exist) {
+                    ImageDownloadUtil.downloadImg(key);
+                    System.out.println("图像不存在");
+                } else {
+                    System.out.println("图像存在");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String message = "[CQ:image,file=" + FileConst.KMZ_IMG_PREFIX + key + ".jpg]";
+
+            switch (MessageType.getEnumByType(receiveMsg.getMessage_type())) {
+                case GROUP:
+                    GroupMsg groupMsg = new GroupMsg();
+                    groupMsg.setMessage(message);
+                    groupMsg.setGroup_id(receiveMsg.getGroup_id());
+                    groupMsgService.sendGroupMsg(groupMsg);
+                    break;
+                case PRIVATE:
+                    PrivateMsg privateMsg = new PrivateMsg();
+                    privateMsg.setMessage(message);
+                    privateMsg.setUser_id(receiveMsg.getUser_id());
+                    privateMsgService.sendPrivateMsg(privateMsg);
+                    break;
+            }
+        }
+        return null;
+    }
+
     @Override
     public List<String> getKmzImageKey(int n) {
         List<String> keyList = new ArrayList<>();
@@ -27,7 +90,6 @@ public class KmzServiceImpl implements KmzService {
             String lastPid = mzImgList.get(mzImgList.size() - 1).getPinId();
 
             for (int page = 1; page <= n / 2 + 1; page++) {
-                System.out.println("运行了一次");
                 Element tempElement = Jsoup.connect("https://huaban.com/boards/481662/?jxt53umu&max=" + lastPid + "&limit=20&wfl=" + page).get().body();
                 List<MzImg> tempUrlList = parsePinsFromXml(tempElement.toString());
                 lastPid = tempUrlList.get(tempUrlList.size() - 1).getPinId();
