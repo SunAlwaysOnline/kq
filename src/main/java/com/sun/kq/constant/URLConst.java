@@ -37,12 +37,18 @@ public class URLConst {
     /**
      * 花瓣网上mz的首页
      */
-    public static final String HUABAN_MZ_INDEX = "https://huaban.com/boards/24169299/";
+    public static final String HUABAN_MZ_INDEX = "https://huaban.com/boards/481662/";
 
     /**
      * mz图URL的前缀，后面加key
      */
     public static final String MZ_IMG_PREFIX = "https://hbimg.huabanimg.com/";
+
+    //-------------------------------------csdn-------------------------------------
+    /**
+     * csdn主页地址
+     */
+    public static final String CSDN_HOME = "https://blog.csdn.net/qq_33591903";
 
 
 }

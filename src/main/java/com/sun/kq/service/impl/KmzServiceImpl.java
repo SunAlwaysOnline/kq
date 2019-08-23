@@ -125,12 +125,11 @@ public class KmzServiceImpl implements KmzService {
         Matcher m = r.matcher(xmlStr);
         while (m.find()) {
             MzImg pin = new MzImg();
-            System.out.println(m.group());
             pin.setPinId(m.group(1));
             pin.setKey(m.group(2));
             pin.setType(m.group(3));
             pins.add(pin);
-            System.out.println(pin.getPinId() + "," + pin.getKey() + "," + pin.getType());
+            System.out.println(pin.toString());
         }
         return pins;
     }
