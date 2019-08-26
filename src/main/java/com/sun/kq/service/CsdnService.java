@@ -9,4 +9,10 @@ public interface CsdnService {
      * @return
      */
     Csdn getCsdnHomeInfo();
+
+
+    /**
+     * 访问所有博文的内容
+     */
+    void visitAllBlogs();
 }

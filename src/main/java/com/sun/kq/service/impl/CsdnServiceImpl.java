@@ -12,8 +12,10 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class CsdnServiceImpl extends ServiceImpl<CsdnMapper, Csdn> implements CsdnService {
@@ -61,4 +63,38 @@ public class CsdnServiceImpl extends ServiceImpl<CsdnMapper, Csdn> implements Cs
         }
         return null;
     }
+
+    @Override
+    public void visitAllBlogs() {
+        Document document = null;
+        //1.先拿到总页数
+        Integer pages = 0;
+        try {
+            document = Jsoup.connect(URLConst.CSDN_HOME).get();
+            Elements elements = document.select("span[class=count]");
+            Integer article_sum = Integer.valueOf(elements.get(0).text());
+            pages = (article_sum - 1) / 20 + 1;
+            if (pages <= 0) {
+                return;
+            }
+            //2.遍历页码
+            for (int i = 1; i <= pages; i++) {
+                String page_url = URLConst.CSDN_HOME + "//article/list/" + i + "?";
+                Document page_document = Jsoup.connect(page_url).get();
+                Elements elements1 = page_document.select("p[class=content]").select("a");
+                for (Element element : elements1) {
+                    String blog_url = element.attr("href");
+                    if (!blog_url.contains(URLConst.CSDN_HOME)) {
+                        continue;
+                    }
+                    //3.访问该网址
+                    Jsoup.connect(blog_url).get();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

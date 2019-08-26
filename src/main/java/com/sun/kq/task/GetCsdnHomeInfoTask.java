@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CsdnTask {
+public class GetCsdnHomeInfoTask {
 
     @Autowired
     CsdnService csdnService;
 
     /**
-     * //每隔10分钟获取csdn主页信息
+     * //每隔5分钟获取csdn主页信息
      */
     //秒 分 时 日 月 周 年
-    @Scheduled(cron = "0 */10 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void getCsdnHomeInfo() {
         csdnService.getCsdnHomeInfo();
         log.info("{}-定时任务-{}", CsdnServiceImpl.class, "获取csdn主页信息");
