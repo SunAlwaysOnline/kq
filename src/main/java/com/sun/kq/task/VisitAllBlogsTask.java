@@ -15,10 +15,10 @@ public class VisitAllBlogsTask {
     CsdnService csdnService;
 
     /**
-     * //每隔2分钟访问csdn内的所有博文
+     * //每隔5分钟访问csdn内的所有博文
      */
     //秒 分 时 日 月 周 年
-    @Scheduled(cron = "0 */2 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void visitAllBlogs() {
         csdnService.visitAllBlogs();
         log.info("{}-定时任务-{}", CsdnServiceImpl.class, "访问所有博文");
