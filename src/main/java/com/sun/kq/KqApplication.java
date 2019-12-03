@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class KqApplication {
-
+//develop分支
     public static void main(String[] args) {
         ServiceUtil.startMysql();
         ServiceUtil.startRedis();
